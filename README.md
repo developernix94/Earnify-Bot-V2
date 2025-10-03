@@ -282,7 +282,7 @@
     }
 
     function grantReward() {
-      const reward = 5; // example reward
+      const reward = 0.5; // example reward
       points += 1;
       balance += reward;
       updateDisplay();
