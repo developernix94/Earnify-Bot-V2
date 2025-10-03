@@ -151,11 +151,26 @@ footer {
 
 <footer>© 2025 Easy Earning Bot</footer>
 
-<!-- Adexora Script -->
-<script src="https://adexora.com/cdn/ads.js?id=454"></script>
+<!-- Updated Adexora Script -->
+<script src="https://adexora.com/cdn/ads.js?id=455"></script>
+<script>
+window.showAdexora()
+  .then(() => {
+    const rewardMsg = document.getElementById('reward-msg');
+    rewardMsg.style.display = 'block';
+    setTimeout(() => rewardMsg.style.display = 'none', 2500);
+
+    // ✅ Your reward logic here
+    console.log('Reward logic executed');
+  })
+  .catch(e => {
+    // ❌ Handle errors here
+    console.error("Failed to show ad:", e);
+  });
+</script>
+
 <!-- Telegram Web App JS -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <script>
 // Initialize Telegram user
 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || null;
@@ -164,7 +179,6 @@ if (!tgUser) {
   alert("⚠️ Please open this Mini App inside Telegram to track rewards.");
 }
 
-const rewardMsg = document.getElementById('reward-msg');
 const animeBg = document.getElementById('anime-bg');
 
 // Array of anime character images
@@ -182,34 +196,6 @@ characters.forEach((src, i) => {
   char.style.left = `${10 + i*30}%`;
   char.style.animationDelay = `${i*2}s`;
   animeBg.appendChild(char);
-});
-
-// Auto-show ad on page load
-window.addEventListener('load', () => {
-  if (!tgUser) return;
-
-  window.showAdexora()
-    .then(() => {
-      // Show reward animation
-      rewardMsg.style.display = 'block';
-      setTimeout(() => rewardMsg.style.display = 'none', 2500);
-
-      // Send reward info to your server
-      fetch('https://yourserver.com/reward', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          telegram_id: tgUser.id,
-          username: tgUser.username,
-          first_name: tgUser.first_name,
-          reward: 1,
-          timestamp: Date.now()
-        })
-      });
-    })
-    .catch(e => {
-      console.error("Failed to show ad:", e);
-    });
 });
 </script>
 </body>
