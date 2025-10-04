@@ -210,13 +210,13 @@
       <h3 style="margin-top:0; margin-bottom:15px;">Withdraw Balance</h3>
       <label>Amount (৳):</label>
       <input type="number" id="withdraw-amount" placeholder="Enter amount"/>
-      
-      <label>Method:</label>
+      <label>Payment Method:</label>
       <select id="withdraw-method">
         <option value="bkash">bKash</option>
         <option value="nagad">Nagad</option>
       </select>
-
+      <label>Number:</label>
+      <input type="text" id="withdraw-number" placeholder="Enter your bKash/Nagad number"/>
       <button class="submit-btn" onclick="confirmWithdrawal()">Submit</button>
       <button class="cancel-btn" onclick="closeWithdrawModal()">Cancel</button>
     </div>
@@ -228,9 +228,7 @@
     let historyLog = [];
     let tgUser = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initApp();
-    });
+    document.addEventListener('DOMContentLoaded', () => initApp());
 
     function initApp() {
       if (window.Telegram && Telegram.WebApp) {
@@ -248,11 +246,8 @@
       if (tgUser) {
         document.getElementById('username').textContent = tgUser.first_name || 'Telegram User';
         const picDiv = document.getElementById('profile-pic');
-        if (tgUser.photo_url) {
-          picDiv.innerHTML = `<img src="${tgUser.photo_url}">`;
-        } else {
-          picDiv.textContent = (tgUser.first_name || 'U').charAt(0).toUpperCase();
-        }
+        if (tgUser.photo_url) picDiv.innerHTML = `<img src="${tgUser.photo_url}">`;
+        else picDiv.textContent = (tgUser.first_name || 'U').charAt(0).toUpperCase();
       }
     }
 
@@ -317,7 +312,7 @@
     }
 
     function grantReward() {
-      const reward = 0.5; // example reward
+      const reward = 0.5;
       points += 1;
       balance += reward;
       updateDisplay();
@@ -328,18 +323,13 @@
 
     function showRewardedInterstitial() {
       if (typeof window.showAdexora !== 'function') return alert("Ad not ready");
-      window.showAdexora()
-        .then(grantReward)
-        .catch(e => alert("Ad failed: " + e));
+      window.showAdexora().then(grantReward).catch(e => alert("Ad failed: " + e));
     }
 
     function joinTelegramChannel() {
       const link = "https://t.me/Abincome536";
-      if (Telegram && Telegram.WebApp) {
-        Telegram.WebApp.openTelegramLink(link);
-      } else {
-        window.open(link, "_blank");
-      }
+      if (Telegram && Telegram.WebApp) Telegram.WebApp.openTelegramLink(link);
+      else window.open(link, "_blank");
       addToHistory("Joined Telegram Channel");
       saveData();
     }
@@ -353,14 +343,9 @@
       if (viewId === 'history-view') renderHistory();
     }
 
-    // Withdrawal Functions
     function requestWithdrawal() {
-      if (balance <= 0) return alert("Your balance is zero!");
-      document.getElementById('withdraw-amount').value = '';
-      document.getElementById('withdraw-method').value = 'bkash';
       document.getElementById('withdraw-modal').style.display = 'flex';
     }
-
     function closeWithdrawModal() {
       document.getElementById('withdraw-modal').style.display = 'none';
     }
@@ -368,20 +353,24 @@
     function confirmWithdrawal() {
       const amount = parseFloat(document.getElementById('withdraw-amount').value);
       const method = document.getElementById('withdraw-method').value;
+      const number = document.getElementById('withdraw-number').value.trim();
 
       if (isNaN(amount) || amount <= 0 || amount > balance) {
         return alert(`Invalid amount! Must be between 0 and ৳${balance.toFixed(2)}`);
       }
+      if (!number) return alert("Please enter your bKash/Nagad number!");
 
-      // Deduct balance
       balance -= amount;
       updateDisplay();
+      addToHistory(`Withdrawal Requested: ৳${amount} via ${method} (${number})`);
 
-      // Log history
-      addToHistory(`Withdrawal Requested: ৳${amount} via ${method}`);
-
-      // Send Telegram message
-      const msg = encodeURIComponent(`New Withdrawal Request:\nUser: ${tgUser?.first_name || 'Unknown'}\nID: ${tgUser?.id || 'N/A'}\nAmount: ৳${amount}\nMethod: ${method}`);
+      const msg = encodeURIComponent(
+        `User: ${tgUser?.first_name || 'Unknown'}\n` +
+        `Username: ${tgUser?.username || 'N/A'}\n` +
+        `Payment Method: ${method}\n` +
+        `Number: ${number}\n` +
+        `Amount: ৳${amount}`
+      );
       const tgLink = `https://t.me/ADSPAYMENT89?text=${msg}`;
       window.open(tgLink, "_blank");
 
@@ -389,7 +378,6 @@
       closeWithdrawModal();
       alert("Withdrawal request sent! Please wait for confirmation.");
     }
-
   </script>
 </body>
 </html>
