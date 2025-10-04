@@ -162,7 +162,7 @@
         </div>
         <div class="task-card" onclick="joinTelegramChannel()">
           <div class="task-icon"><i class="fa-brands fa-telegram"></i></div>
-          <div class="task-details"><h3>Join Telegram</h3><p>Click to join our official channel.</p></div>
+          <div class="task-details"><h3>Join Telegram</h3><p>Click to join our promotional channel.</p></div>
           <div class="task-arrow"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
       </div>
